@@ -10,7 +10,6 @@ def run_face_tilt_detection(middle_angle=90.0, treshold=50.0):
     # Initialize the Mediapipe face detection and landmark detection components
     mp_face_detection = mp.solutions.face_detection
     mp_face_mesh = mp.solutions.face_mesh
-    # mp_drawing = mp.solutions.drawing_utils
 
     # Open a video capture stream (you can also use a webcam)
     cap = cv2.VideoCapture(0)
