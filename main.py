@@ -10,7 +10,7 @@ if __name__ == "__main__":
         target=run_face_tilt_detection,
         kwargs={
             "middle_angle": 90.0,
-            "treshold": 50.0,
+            "threshold": 50.0,
             "update_method": update_face_direction,
         },
     )
