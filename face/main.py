@@ -3,10 +3,8 @@ import mediapipe as mp
 
 import math
 
-from utils import update_face_direction
 
-
-def run_face_tilt_detection(middle_angle=90.0, treshold=50.0):
+def run_face_tilt_detection(middle_angle=90.0, treshold=50.0, update_method=None):
     # Initialize the Mediapipe face detection and landmark detection components
     mp_face_detection = mp.solutions.face_detection
     mp_face_mesh = mp.solutions.face_mesh
@@ -72,6 +70,6 @@ def run_face_tilt_detection(middle_angle=90.0, treshold=50.0):
                         elif abs_head_tilt_angle < middle_angle - treshold:
                             direction = "left"
 
-                        update_face_direction(direction)
+                        update_method(direction)
 
     cap.release()
