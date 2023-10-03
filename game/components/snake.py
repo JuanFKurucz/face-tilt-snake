@@ -1,6 +1,6 @@
 import pygame
 
-from game.config import GRID_HEIGHT, GRID_WIDTH, GRID_SIZE, GREEN, DIRECTIONS
+from game.config import DIRECTIONS, GREEN, GRID_HEIGHT, GRID_SIZE, GRID_WIDTH
 
 
 class Snake:
@@ -8,7 +8,7 @@ class Snake:
         self,
         initial_direction=(1, 0),
         initial_position=(GRID_WIDTH // 2, GRID_HEIGHT // 2),
-        speed=15,
+        speed=5,
     ) -> None:
         """
         Initialize the Snake object.
@@ -45,11 +45,12 @@ class Snake:
         Args:
             direction (str): New direction to rotate towards ('left' or 'right').
         """
-        current_dir = self.translate_direction()
-        if current_dir in DIRECTIONS:
+        try:
+            current_dir = self.translate_direction()
             new_dir = DIRECTIONS.index(current_dir)
-        else:
+        except ValueError:
             new_dir = 0
+
         if direction == "left":
             new_dir = (new_dir - 1) % len(DIRECTIONS)
         elif direction == "right":
@@ -70,6 +71,7 @@ class Snake:
         """
         if self.grid[0] == food.position:
             food.reposition()
+            self.speed += 1
         else:
             self.grid.pop()
 

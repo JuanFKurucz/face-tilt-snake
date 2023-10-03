@@ -1,18 +1,13 @@
 import sys
+
 import pygame
-from game.config import WIDTH, HEIGHT, WHITE, DIRECTIONS
-from game.components.snake import Snake
+
 from game.components.food import Food
+from game.components.snake import Snake
+from game.config import HEIGHT, WHITE, WIDTH
 
 
 def run_game(get_method=None, lock=None):
-    """
-    Run the Snake game.
-
-    Args:
-        get_method (callable, optional): A function that returns the current input method.
-        lock (threading.Lock, optional): A lock for synchronization in multithreaded environments.
-    """
     pygame.init()
 
     # Initialize the screen
@@ -25,6 +20,9 @@ def run_game(get_method=None, lock=None):
     # Game over flag
     game_over = False
     command = "middle"
+
+    # Create a clock object to control the frame rate
+    clock = pygame.time.Clock()
 
     # Game loop
     while True:
@@ -53,9 +51,5 @@ def run_game(get_method=None, lock=None):
 
         pygame.display.flip()
 
-        # Delay to control the game speed
-        pygame.time.delay(1000 // snake.speed)
-
-
-if __name__ == "__main__":
-    run_game()
+        # Use the clock to control the game speed
+        clock.tick(snake.speed)

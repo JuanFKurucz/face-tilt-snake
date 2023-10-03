@@ -1,6 +1,8 @@
 import random
+
 import pygame
-from game.config import GRID_HEIGHT, GRID_WIDTH, GRID_SIZE, RED
+
+from game.config import GRID_HEIGHT, GRID_SIZE, GRID_WIDTH, RED
 
 
 class Food:

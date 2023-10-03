@@ -2,7 +2,6 @@ import threading
 
 from face.main import run_face_tilt_detection
 from game.main import run_game
-
 from utils import update_face_direction, get_face_direction, face_direction_lock
 
 if __name__ == "__main__":

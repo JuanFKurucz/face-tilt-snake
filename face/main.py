@@ -1,6 +1,7 @@
+import math
+
 import cv2
 import mediapipe as mp
-import math
 
 
 def run_face_tilt_detection(middle_angle=90.0, threshold=50.0, update_method=None):
@@ -21,6 +22,7 @@ def run_face_tilt_detection(middle_angle=90.0, threshold=50.0, update_method=Non
 
     # Open a video capture stream (you can also use a webcam)
     cap = cv2.VideoCapture(0)
+    past_direction = "middle"
 
     with mp_face_detection.FaceDetection(
         min_detection_confidence=0.5
@@ -68,12 +70,10 @@ def run_face_tilt_detection(middle_angle=90.0, threshold=50.0, update_method=Non
                         direction = "right"
                     elif abs_head_tilt_angle < middle_angle - threshold:
                         direction = "left"
-
                     # Call the update method with the detected direction
-                    if callable(update_method):
+                    if past_direction != direction:
+                        past_direction = direction
                         update_method(direction)
-                    else:
-                        raise ValueError("The provided update_method is not callable.")
 
     cap.release()
 
