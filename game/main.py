@@ -1,16 +1,18 @@
 import sys
-
 import pygame
-
-
 from game.config import WIDTH, HEIGHT, WHITE, DIRECTIONS
-
 from game.components.snake import Snake
 from game.components.food import Food
 
 
-# Function to run the game process
 def run_game(get_method=None, lock=None):
+    """
+    Run the Snake game.
+
+    Args:
+        get_method (callable, optional): A function that returns the current input method.
+        lock (threading.Lock, optional): A lock for synchronization in multithreaded environments.
+    """
     pygame.init()
 
     # Initialize the screen
@@ -28,11 +30,8 @@ def run_game(get_method=None, lock=None):
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                break
-
-        # ... (update and draw game state) ...
-        pygame.display.flip()
-        pygame.time.delay(1000 // snake.speed)
+                pygame.quit()
+                sys.exit()
 
         if not game_over:
             # Move the snake
@@ -56,5 +55,7 @@ def run_game(get_method=None, lock=None):
 
         # Delay to control the game speed
         pygame.time.delay(1000 // snake.speed)
-    pygame.quit()
-    sys.exit()
+
+
+if __name__ == "__main__":
+    run_game()
