@@ -27,6 +27,7 @@ class Snake:
             "up": (0, -1),
             "down": (0, 1),
         }
+        self.score = 0
 
     def translate_direction(self):
         """
@@ -72,6 +73,7 @@ class Snake:
         if self.grid[0] == food.position:
             food.reposition()
             self.speed += 1
+            self.score += 1
         else:
             self.grid.pop()
 
