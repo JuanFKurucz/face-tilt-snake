@@ -2,6 +2,7 @@ import sys
 import pickle
 
 import pygame
+import cv2
 
 from game.components.food import Food
 from game.components.snake import Snake
@@ -81,7 +82,7 @@ def display_high_scores(screen, score):
     pygame.time.delay(10000)
 
 
-def run_game(get_method=None, lock=None):
+def run_game(get_method=None, lock=None, frame_queue=None):
     pygame.init()
 
     # Initialize the screen
@@ -95,15 +96,16 @@ def run_game(get_method=None, lock=None):
     game_over = False
     command = "middle"
 
-    # Create a clock object to control the frame rate
-    clock = pygame.time.Clock()
-
     # Initialize the font module
     pygame.font.init()
     font = pygame.font.SysFont(None, 30)
 
     # Game loop
+    frame_start_time = pygame.time.get_ticks()
     while True:
+        frame = frame_queue.get()
+        cv2.imshow("Deteccion de angulo", frame)
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -113,35 +115,33 @@ def run_game(get_method=None, lock=None):
                     snake.rotate("left")
                 elif event.key == pygame.K_RIGHT:
                     snake.rotate("right")
+        if pygame.time.get_ticks() - frame_start_time >= 1000 / snake.speed:
+            frame_start_time = pygame.time.get_ticks()
+            if not game_over:
+                # Move the snake
+                game_over = snake.move()
+                snake.check_collision(food)
 
-        if not game_over:
-            # Move the snake
-            game_over = snake.move()
-            snake.check_collision(food)
+                # Clear the screen
+                screen.fill(WHITE)
 
-            # Clear the screen
-            screen.fill(WHITE)
+                # Draw the score
+                score_text = font.render(f"Puntaje: {snake.score}", True, BLACK)
+                screen.blit(score_text, (10, 10))
 
-            # Draw the score
-            score_text = font.render(f"Score: {snake.score}", True, BLACK)
-            screen.blit(score_text, (10, 10))
+                # Draw the snake
+                snake.draw(screen)
+                food.draw(screen)
 
-            # Draw the snake
-            snake.draw(screen)
-            food.draw(screen)
+                if get_method() != command:
+                    with lock:
+                        command = get_method()
+                        if command != "middle":
+                            snake.rotate(command)
+            else:
+                display_high_scores(screen, snake.score)
+                snake = Snake()
+                food = Food()
+                game_over = False
 
-            if get_method() != command:
-                with lock:
-                    command = get_method()
-                    if command != "middle":
-                        snake.rotate(command)
-        else:
-            display_high_scores(screen, snake.score)
-            snake = Snake()
-            food = Food()
-            game_over = False
-
-        pygame.display.flip()
-
-        # Use the clock to control the game speed
-        clock.tick(snake.speed)
+            pygame.display.flip()

@@ -3,6 +3,10 @@ import math
 import cv2
 import mediapipe as mp
 
+from queue import Queue
+
+frame_queue = Queue()
+
 
 def run_face_tilt_detection(middle_angle=90.0, threshold=50.0, update_method=None):
     """
@@ -45,6 +49,17 @@ def run_face_tilt_detection(middle_angle=90.0, threshold=50.0, update_method=Non
                 # Perform face landmark detection
                 results_landmarks = face_mesh.process(frame_rgb)
                 if results_landmarks.multi_face_landmarks:
+                    for detection in results_detection.detections:
+                        bboxC = detection.location_data.relative_bounding_box
+                        ih, iw, _ = frame.shape
+                        x, y, w, h = (
+                            int(bboxC.xmin * iw),
+                            int(bboxC.ymin * ih),
+                            int(bboxC.width * iw),
+                            int(bboxC.height * ih),
+                        )
+                        cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+
                     landmarks = results_landmarks.multi_face_landmarks[0]
 
                     # Extract relevant facial landmarks (e.g., eyes and nose)
@@ -74,6 +89,19 @@ def run_face_tilt_detection(middle_angle=90.0, threshold=50.0, update_method=Non
                     if past_direction != direction:
                         past_direction = direction
                         update_method(direction)
+
+                    cv2.putText(
+                        frame,
+                        f"Angulo: {head_tilt_angle:.2f} grados; Direccion: {direction}",
+                        (10, 30),
+                        cv2.FONT_HERSHEY_SIMPLEX,
+                        1,
+                        (0, 0, 255),
+                        2,
+                    )
+
+            # Display the frame
+            frame_queue.put(frame)
 
     cap.release()
 

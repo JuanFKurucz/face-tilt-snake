@@ -1,8 +1,8 @@
 DIRECTIONS = ["left", "up", "right", "down"]
 
 # Constants
-WIDTH, HEIGHT = 640, 480
-GRID_SIZE = 20
+WIDTH, HEIGHT = 1080, 720
+GRID_SIZE = 25
 GRID_WIDTH = WIDTH // GRID_SIZE
 GRID_HEIGHT = HEIGHT // GRID_SIZE
 

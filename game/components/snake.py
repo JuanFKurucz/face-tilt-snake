@@ -1,6 +1,6 @@
 import pygame
 
-from game.config import DIRECTIONS, GREEN, GRID_HEIGHT, GRID_SIZE, GRID_WIDTH
+from game.config import DIRECTIONS, BLACK, GRID_HEIGHT, GRID_SIZE, GRID_WIDTH
 
 
 class Snake:
@@ -70,10 +70,17 @@ class Snake:
         Returns:
             bool: True if collision with food occurred, False otherwise.
         """
-        if self.grid[0] == food.position:
-            food.reposition()
-            self.speed += 1
-            self.score += 1
+        posible_positions = [
+            (food.position[0] + x, food.position[1] + y)
+            for x in range(food.width)
+            for y in range(food.height)
+        ]
+        for position in posible_positions:
+            if self.grid[0] == position:
+                food.reposition()
+                self.speed += 1
+                self.score += 1
+                break
         else:
             self.grid.pop()
 
@@ -112,6 +119,6 @@ class Snake:
         for segment in self.grid:
             pygame.draw.rect(
                 screen,
-                GREEN,
+                BLACK,
                 (segment[0] * GRID_SIZE, segment[1] * GRID_SIZE, GRID_SIZE, GRID_SIZE),
             )
