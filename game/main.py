@@ -7,6 +7,7 @@ import cv2
 from game.components.food import Food
 from game.components.snake import Snake
 from game.config import HEIGHT, WHITE, WIDTH, BLACK
+from game.utils import aspect_scale
 
 
 # Load or initialize the high score data
@@ -100,6 +101,9 @@ def run_game(get_method=None, lock=None, frame_queue=None):
     pygame.font.init()
     font = pygame.font.SysFont(None, 30)
 
+    background = aspect_scale(
+        pygame.image.load("./game/assets/background/background.png"), WIDTH, HEIGHT
+    )
     # Game loop
     frame_start_time = pygame.time.get_ticks()
     while True:
@@ -122,8 +126,7 @@ def run_game(get_method=None, lock=None, frame_queue=None):
                 game_over = snake.move()
                 snake.check_collision(food)
 
-                # Clear the screen
-                screen.fill(WHITE)
+                screen.blit(background, (0, 0))
 
                 # Draw the score
                 score_text = font.render(f"Puntaje: {snake.score}", True, BLACK)
